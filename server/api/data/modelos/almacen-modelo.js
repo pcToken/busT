@@ -58,9 +58,13 @@ var ubicacionSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref:"Ubicacion",
         autopopulate:true
-    }]                  
+    }],
+    activo:{
+        type:Boolean,
+        default:true
+    }              
 });
 ubicacionSchema.plugin(autoPopulate);
 
-mongoose.model("Almacen",almacenSchema);
-mongoose.model("Ubicacion",ubicacionSchema);
+mongoose.model("Almacen",almacenSchema,"almacenes");
+mongoose.model("Ubicacion",ubicacionSchema,"ubicaciones");

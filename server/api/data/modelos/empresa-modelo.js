@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 var autoPopulate = require('mongoose-autopopulate');
+var enums = require("./enums.js");
 var cargoSchema = new mongoose.Schema({
     esArea:Boolean,
     nombre:{
@@ -47,7 +48,7 @@ var empresaSchema = new mongoose.Schema({
         },
         telefono: String,
         horario: [{
-            dia:{type:String, enum:["lunes","martes","miercoles", "jueves", "viernes", "sabado","domingo"]},
+            dia:{type:String, enum:enums.diasEnum},
             horario:String
         }],
         activo:{type:Boolean, default:true},

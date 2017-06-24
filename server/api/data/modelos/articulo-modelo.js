@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-
+var enums = require("./enums.js");
 
 var detalleSchema = new mongoose.Schema({
     fotos : [{
@@ -29,13 +29,13 @@ var articuloSchema = new mongoose.Schema({
     //que tipo de embalaje es
     embalaje: {
         type: String,
-        enum: ["caja", "paquete", "articulo", "parte", "subparte"]
+        enum: enums.embalajeEnum
     },
     //cantidad de producto dentro de embalaje
     cantidadPorPaquete : Number,
     //precio
     precio: {type:Number, required:true},
-    moneda: {type: String, enum: ['bs','usd']},
+    moneda: {type: String, enum: enums.monedaEnum},
     //cantidad disponible del articulo
     stock : {type: Number, required:true},
     //codigo del articulo que es padre de este articulo

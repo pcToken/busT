@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 var autoPopulate = require("mongoose-autopopulate");
+var enums = require("./enums.js");
 //esquema para guardar los roles
 var rolSchema = new mongoose.Schema({
     nombre: {
@@ -36,11 +37,11 @@ var empleadoSchema  = new mongoose.Schema({
     direccion:String,
     sexo:{
         type: String,
-        enum: ["masculino", "femenino", "indefinido"]
+        enum: enums.sexoEnum
     },
     fechaNacimiento: Date,
     horario:[{
-        dia:{type:String, enum:["lunes","martes","miercoles", "jueves", "viernes", "sabado","domingo"]},
+        dia:{type:String, enum:enums.diasEnum},
         horario:String
     }],
     cargo: {

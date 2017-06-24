@@ -1,7 +1,10 @@
 var mongoose = require('mongoose');
 var dbUrl = 'mongodb://localhost:27017/datos';
+var autoIncrement = require("mongoose-auto-increment");
 // connect to data base
-mongoose.connect(dbUrl);
+var connection = mongoose.connect(dbUrl);
+//initialize auto-increment
+autoIncrement.initialize(connection);
 
 mongoose.connection.on("connected", function() {
     console.log("mongoose connected to " + dbUrl);
