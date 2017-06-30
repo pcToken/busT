@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
-var mongoose = require("mongoose");
 var promise = require("bluebird");
+var winston = require("winston");
 mongoose.promise = promise;
 var Articulo = mongoose.model('Articulo');
 var Cargo = mongoose.model('Cargo');

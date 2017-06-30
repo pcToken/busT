@@ -1,5 +1,6 @@
 var db = require('./api/data/db.js');
 var express = require("express");
+var winston = require("winston");
 var path  = require("path");
 var routes = require(path.join(__dirname,"api","routes"));
 var bodyParser = require('body-parser');
@@ -33,5 +34,19 @@ var server = app.listen(app.get('port'), function() {
     var port  = server.address().port;
     console.log("sirviendo en puerto: " + port);
 });
-
+//configure logger 
+winston.configure({
+    transports: [
+    new (winston.transports.File)({
+          name: 'info-file',
+          filename: 'filelog-info.log',
+          level: 'info'
+    }),
+    new (winston.transports.File)({
+      name: 'error-file',
+      filename: 'filelog-error.log',
+      level: 'warning'
+    })
+  ]
+});
 

@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var autoPopulate = require("mongoose-autopopulate");
-var enums = require("./enums.js");
+var enums = require("../enums.js");
 //esquema para guardar los roles
 var rolSchema = new mongoose.Schema({
     nombre: {

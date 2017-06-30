@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var autoIncrement = require("mongoose-auto-increment");
-var enums = require("./enums.js")
+var enums = require("../enums.js")
 var compraSchema = new mongoose.Schema({
     nro:{
         type:Number,

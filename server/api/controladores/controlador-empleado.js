@@ -6,6 +6,7 @@ var bcrypt = require('bcrypt-nodejs');
 var jwt = require('jsonwebtoken');
 var secret = require("../data/secret.js");
 var funciones =require("./funciones.js");
+var messages = require("../messages.js");
 var Rol = mongoose.model("Rol");
 
 
@@ -302,7 +303,7 @@ module.exports.authenticate = function(req, res, next){
         
         verify(token,secret.word).then(function(decoded){
             if(req.params.idEmpresa && decoded.idEmpresa == req.params.idEmpresa) {next();} else {throw({                               statusCode:401,
-                    message:"UNAUTHORIZED"
+                    message:messages.E1001.message //unauthorized
                 });  
             };  
         }).catch(function(err){
@@ -313,7 +314,7 @@ module.exports.authenticate = function(req, res, next){
     else{
         var err = {
             statusCode: 403,
-            message:"missing token"
+            message:messages.E1002.message // missing token
         };
         funciones.handleError(err,res);
     }

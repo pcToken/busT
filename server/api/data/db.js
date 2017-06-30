@@ -24,6 +24,6 @@ process.on("SIGINT", function() {
         process.exit(0);
     });
 });
-require("./articulo-modelo.js");
-require("./empresa-modelo.js");
-require("./empleado-modelo.js");
+require("./modelos/articulo-modelo.js");
+require("./modelos/empresa-modelo.js");
+require("./modelos/empleado-modelo.js");

@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-var enums = require("./enums.js");
+var enums = require("../enums.js");
 
 var detalleSchema = new mongoose.Schema({
     fotos : [{

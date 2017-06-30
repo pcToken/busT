@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var autoPopulate = require('mongoose-autopopulate');
-var enums = require("./enums.js");
+var enums = require("../enums.js");
 var cargoSchema = new mongoose.Schema({
     esArea:Boolean,
     nombre:{
