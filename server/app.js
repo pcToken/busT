@@ -5,13 +5,32 @@ var path  = require("path");
 var routes = require(path.join(__dirname,"api","routes"));
 var bodyParser = require('body-parser');
 var ctrlEmpleado = require("./api/controladores/controlador-empleado.js");
+var https = require("https");
+var fs = require("fs");
+
 //initialize
 var app = express();
+
+// Setup HTTPS
+var options = {
+  key: fs.readFileSync(path.join(__dirname,"private.key")),
+  cert: fs.readFileSync(path.join(__dirname,"certificate.pem"))
+};
+
 
 //log all the requests
 app.use(function (req, res, next) {
     console.log(req.method, req.url);
     next();
+});
+//HTTPS
+app.use(function(req, res, next) {  
+  if(!req.secure) {
+    var secureUrl = "https://" + req.headers['host'] + req.url; 
+    res.writeHead(301, { "Location":  secureUrl });
+    res.end();
+  }
+  next();
 });
 
 //use body parser for post requests
@@ -21,8 +40,6 @@ app.use(bodyParser.json());
 // use routes from file route
 app.use('/api', routes);
 
-// use public folder as a static folder
-app.use(express.static(path.join(__dirname,'/../client')));
 app.use('/node_modules', express.static(path.join(__dirname,'/../node_modules')));
 
 //setting app port
@@ -30,10 +47,11 @@ app.set('port',(process.env.PORT || 5000))
 
 
 //listen for requests in port
-var server = app.listen(app.get('port'), function() {
-    var port  = server.address().port;
+var secureServer = https.createServer(options, app).listen(function() {
+    var port  = app.get("port");
     console.log("sirviendo en puerto: " + port);
 });
+
 //configure logger 
 winston.configure({
     transports: [
