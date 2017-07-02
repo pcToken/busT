@@ -47,11 +47,10 @@ app.set('port',(process.env.PORT || 5000))
 
 
 //listen for requests in port
-var secureServer = https.createServer(options, app).listen(function() {
+var secureServer = https.createServer(options, app).listen(app.get("port"),function() {
     var port  = app.get("port");
     console.log("sirviendo en puerto: " + port);
 });
-
 //configure logger 
 winston.configure({
     transports: [
