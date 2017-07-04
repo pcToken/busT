@@ -33,7 +33,7 @@ var mercaderiaSchema = new mongoose.Schema({
     },
     moneda:{
         type:String,
-        enum:enum.monedaEnum
+        enum:enums.monedaEnum
     },
     cantidad:{
         required:true,

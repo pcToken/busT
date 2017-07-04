@@ -23,15 +23,21 @@ app.use(function (req, res, next) {
     console.log(req.method, req.url);
     next();
 });
+//configure logger 
+winston.add(winston.transports.File,{
+          filename: path.join(__dirname,'filelog-error.log'),
+          level: "warning"
+    });
+console.log(path.join(__dirname,'filelog-error.log'));
 //HTTPS
-app.use(function(req, res, next) {  
-  if(!req.secure) {
-    var secureUrl = "https://" + req.headers['host'] + req.url; 
-    res.writeHead(301, { "Location":  secureUrl });
-    res.end();
-  }
-  next();
-});
+//app.use(function(req, res, next) {  
+//  if(!req.secure) {
+//    var secureUrl = "https://" + req.headers['host'] + req.url; 
+//    res.writeHead(301, { "Location":  secureUrl });
+//    res.end();
+//  }
+//  next();
+//});
 
 //use body parser for post requests
 app.use(bodyParser.urlencoded({extended : true}));
@@ -47,23 +53,13 @@ app.set('port',(process.env.PORT || 5000))
 
 
 //listen for requests in port
-var secureServer = https.createServer(options, app).listen(app.get("port"),function() {
-    var port  = app.get("port");
+//var secureServer = https.createServer(options, app).listen(app.get("port"),function() {
+//    var port  = app.get("port");
+//    console.log("sirviendo en puerto: " + port);
+//});
+var server = app.listen(app.get('port'), function() {
+    var port  = server.address().port;
     console.log("sirviendo en puerto: " + port);
 });
-//configure logger 
-winston.configure({
-    transports: [
-    new (winston.transports.File)({
-          name: 'info-file',
-          filename: 'filelog-info.log',
-          level: 'info'
-    }),
-    new (winston.transports.File)({
-      name: 'error-file',
-      filename: 'filelog-error.log',
-      level: 'warning'
-    })
-  ]
-});
+
 

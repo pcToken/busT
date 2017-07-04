@@ -19,10 +19,11 @@ module.exports._splitArray = function(input) {
 //handles errors
 module.exports.handleError = function(err, res){
     if(err.statusCode){
+        winston.log("error",err.message);
         res.status(err.statusCode).json(err.message);
     }
     else{
-        console.log(err);
+        winston.log("error",err);
         res.status(500).json();
     }
 }

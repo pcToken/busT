@@ -6,14 +6,14 @@ module.exports = function(router){
     //    crear empleado
     //     {
     //        devuelve: {
-    //            exito: [200,"Arreglo json con todas las sucursales de la empresa incluyendo las no activas"],
-    //            fracaso: [404,500]
+    //            exito: [201],
+    //            fracaso: [400,500]
     //        },
     //        recibe: {
     //            nombre:["String","obligatorio"],
-    //            cargo:["String","obligatorio"],
+    //            cargo:["String","opcional"],
     //            login:["String","obligatorio"],
-    //            clave:["String","obligatorio"],["String","opcional"],
+    //            clave:["String","obligatorio"],
     //            sucursal:["String","opcional"],
     //            celular:["String","opcional"],
     //            email:["String","opcional"],

@@ -49,7 +49,7 @@ router
 //            nombre:["String","obligatorio","nombre oficial de la empresa"]
 //        }
 //    }
-    .get(ctrlEmpresa.mostrarEmpresa)
+    .get(ctrlEmpleado.authenticate,ctrlEmpresa.mostrarEmpresa)
 //    actualizar empresa 
 //     {
 //        devuelve: {
