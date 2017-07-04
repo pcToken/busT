@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var dbUrl = 'mongodb://localhost:27017/datos';
+var dbUrl = 'mongodb://sholopolis:EstaBuenoElCafe@token-shard-00-00-lj4zz.mongodb.net:27017,token-shard-00-01-lj4zz.mongodb.net:27017,token-shard-00-02-lj4zz.mongodb.net:27017/datos?ssl=true&replicaSet=token-shard-0&authSource=admin';
 var autoIncrement = require("mongoose-auto-increment");
 // connect to data base
 var connection = mongoose.connect(dbUrl);
