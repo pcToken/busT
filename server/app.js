@@ -49,7 +49,7 @@ app.use('/api', routes);
 app.use('/node_modules', express.static(path.join(__dirname,'/../node_modules')));
 
 //setting app port
-app.set('port',(process.env.PORT || 6000))
+app.set('port',(process.env.PORT || 8080))
 
 
 //listen for requests in port

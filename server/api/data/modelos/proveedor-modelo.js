@@ -25,7 +25,7 @@ var proveedorSchema = new mongoose.Schema({
         },
         ciudad:[{
             type:String,
-            enum:enums.paisEnum
+            enum:enums.ciudadEnum
         }],
         calle:String,
         referencia:String,
