@@ -24,7 +24,7 @@ module.exports = function(router){
     //            horarios:["String","opcional"]
     //        }
     //    }
-        .post(ctrlEmpleado.authenticate,ctrlEmpleado.crearEmpleado)
+        .post(ctrlEmpleado.crearEmpleado)
     //    mostrar empleados
     //     {
     //        devuelve: {
