@@ -18,6 +18,7 @@ var recepcionSchema = new mongoose.Schema({
         required:true
     },
     idPago:{
+        //ref to pagos in compra
         type: mongoose.Schema.Types.ObjectId
     },
     idAlmacen:{

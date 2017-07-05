@@ -4,9 +4,9 @@ var winston = require("winston");
 var path  = require("path");
 var routes = require(path.join(__dirname,"api","routes"));
 var bodyParser = require('body-parser');
-var ctrlEmpleado = require("./api/controladores/controlador-empleado.js");
 var https = require("https");
 var fs = require("fs");
+var cors = require("cors");
 
 //initialize
 var app = express();
@@ -17,12 +17,14 @@ var options = {
   cert: fs.readFileSync(path.join(__dirname,"certificate.pem"))
 };
 
-
 //log all the requests
 app.use(function (req, res, next) {
     console.log(req.method, req.url);
     next();
 });
+//allow cors
+app.use(cors());
+
 //configure logger 
 winston.add(winston.transports.File,{
           filename: path.join(__dirname,'filelog-error.log'),

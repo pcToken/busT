@@ -33,6 +33,7 @@ module.exports.mostrarEmpresa= function(req,res){
                 message:"empresa not found"
             });
         }
+        empresa.gerenteGeneral = funciones.filterCargoTree(empresa.gerenteGeneral);
         res.status(200).json(empresa);
     }).catch(err=>{
         funciones.handleError(err,res);

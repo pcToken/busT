@@ -28,7 +28,8 @@ module.exports.handleError = function(err, res){
     }
 }
 //recives an article or array of articles and returns it without the inactive phtotos
-module.exports.filtrarFotos= function(articulo){
+module.exports.filtrarFotos= filtrarFotos;
+function filtrarFotos(articulo){
     if(!articulo.detalle || !articulo.detalle.fotos) return articulo;
     if(articulo instanceof Array){
         articulo.map(function(e,i){
@@ -117,6 +118,24 @@ module.exports.actualizarPadreDeArticulo = function(idEmpresa, articulo, codigoP
         }
     });
 }
+//filter not active cargos in a tree
+module.exports.filterCargoTree = filterCargoTree;
+function filterCargoTree(root){
+    if(!root.activo){
+        return null;
+    }
+    else if(!root.hijos){
+        return root;
+    }
+    else{
+        return root.hijos.map((e,i,arr) =>{
+            e = filterCargoTree(e);
+            if(e == null) arr.splice(i,1);
+        });
+    }
+}
+
+// change padre of cargo given by the idPadre specified
 module.exports.actualizarPadreDeCargo = function(idEmpresa, cargo, idPadre){
     var lookForNewParent = Cargo.findOne({empresa:idEmpresa, _id: idPadre});
     var lookForCurrentParent = Cargo.findOne({empresa:idEmpresa, _id:cargo.padre});

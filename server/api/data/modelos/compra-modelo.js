@@ -67,6 +67,7 @@ var compraSchema = new mongoose.Schema({
             nro:Number,
             nit:String,
             fecha:Date,
+            autorizacion:String,
             codigoControl:String,
             importe:Number,
             moneda:{
