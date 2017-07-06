@@ -28,7 +28,7 @@ app.use(cors());
 //configure logger 
 winston.add(winston.transports.File,{
           filename: path.join(__dirname,'filelog-error.log'),
-          level: "warning"
+          level: "warn"
     });
 console.log(path.join(__dirname,'filelog-error.log'));
 //HTTPS
