@@ -7,6 +7,7 @@ var cargos_routes = require("./cargos-routes")(router);
 var sucursales_routes = require("./sucursales-routes")(router);
 var empleado_routes = require("./empleado-routes")(router);
 var rol_routes = require("./rol-routes")(router);
+var proveedor_routes = require("./proveedor-routes")(router);
 
 var ctrlEmpresa = require('../controladores/controlador-empresas.js');
 
@@ -22,7 +23,7 @@ router
 //        },
 //        recibe: {}
 //    }
-    .get(ctrlEmpresa.mostrarEmpresas)
+    .get(ctrlEmpleado.authenticate,ctrlEmpresa.mostrarEmpresas)
 //    crear empresa
 //    {
 //        devuelve: {
@@ -34,14 +35,14 @@ router
 //            nombre:["String","obligatorio","nombre oficial de la empresa"]
 //        }
 //    }
-    .post(ctrlEmpresa.crearEmpresa);
+    .post(ctrlEmpleado.authenticate,ctrlEmpresa.crearEmpresa);
 
 router
     .route("/empresa/:idEmpresa")
 //    mostrar empresa
 //    {
 //        devuelve: {
-//            exito: [200,"Arreglo json con todas las empresas activas"],
+//            exito: [200,"objeto json con empresa especificada"],
 //            fracaso: [404,500]
 //        },
 //        recibe: {

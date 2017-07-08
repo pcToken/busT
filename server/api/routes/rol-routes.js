@@ -41,7 +41,7 @@ module.exports = function(router){
     //    actualizar rol
     //     {
     //        devuelve: {
-    //            exito: [201],
+    //            exito: [204],
     //            fracaso: [500,400,404]
     //        },
     //        recibe: {

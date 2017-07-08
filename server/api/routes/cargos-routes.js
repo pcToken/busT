@@ -31,7 +31,7 @@ module.exports = function(router){
     //     {
     //        devuelve: {
     //            exito: [200,"Arreglo json con todos los cargos de la empresa incluyendo los no activos"],
-    //            fracaso: [404,500]
+    //            fracaso: [500]
     //        },
     //        recibe: {}
     //    }
@@ -42,7 +42,7 @@ module.exports = function(router){
     //    mostrar cargo
     //     {
     //        devuelve: {
-    //            exito: [200,"objeto json"],
+    //            exito: [200,"objeto json con el cargo especificado"],
     //            fracaso: [404,500]
     //        },
     //        recibe: {}
@@ -65,7 +65,7 @@ module.exports = function(router){
     //   eliminar cargo
     //     {
     //        devuelve: {
-    //            exito: [200],
+    //            exito: [204],
     //            fracaso: [404,400,500]
     //        },
     //        recibe: {}

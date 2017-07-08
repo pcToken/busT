@@ -27,3 +27,4 @@ process.on("SIGINT", function() {
 require("./modelos/articulo-modelo.js");
 require("./modelos/empresa-modelo.js");
 require("./modelos/empleado-modelo.js");
+require("./modelos/proveedor-modelo.js");

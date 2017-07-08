@@ -11,10 +11,10 @@ module.exports = function(router){
     //        },
     //        recibe: {
     //            nombre:["String","obligatorio"],
-    //            cargo:["String","opcional"],
+    //            cargo:["ObjectId del cargo","opcional"],
     //            login:["String","obligatorio"],
     //            clave:["String","obligatorio"],
-    //            sucursal:["String","opcional"],
+    //            sucursal:["ObjectId de la sucursal","opcional"],
     //            celular:["String","opcional"],
     //            email:["String","opcional"],
     //            direccion:["String","opcional"],
@@ -33,7 +33,7 @@ module.exports = function(router){
     //        },
     //        recibe: {}
     //    }
-        .get(ctrlEmpleado.authenticate,ctrlEmpleado.mostrarEmpleados);
+        .get(ctrlEmpleado.mostrarEmpleados);
     router
         .route("/empresa/:idEmpresa/empleado/completo")
     //    mostrar empleados
@@ -66,7 +66,7 @@ module.exports = function(router){
     //    mostrar empleado
     //     {
     //        devuelve: {
-    //            exito: [200,"objeto json"],
+    //            exito: [200,"objeto json con empleado especificado"],
     //            fracaso: [500,404,400]
     //        },
     //        recibe: {}
@@ -94,10 +94,10 @@ module.exports = function(router){
     //        }
     //    }
         .put(ctrlEmpleado.authenticate,ctrlEmpleado.authenticate,ctrlEmpleado.actualizarEmpleado)
-    //    crear empleado
+    //    borrar empleado
     //     {
     //        devuelve: {
-    //            exito: [200],
+    //            exito: [204],
     //            fracaso: [404,500]
     //        },
     //        recibe: {}
@@ -106,15 +106,14 @@ module.exports = function(router){
 
     router
         .route("/empresa/:idEmpresa/empleado/:idEmpleado/rol")
-    //    crear empleado
+    //    agregar rol a empleado
     //     {
     //        devuelve: {
-    //            exito: [200,"objeto json empleado al que se agrego el rol"],
-    //            fracaso: [404,500]
+    //            exito: [204],
+    //            fracaso: [404,400,500]
     //        },
     //        recibe: {
-    //            idEmpleado:["String","obligatorio"],
-    //            rol:["String","obligatorio","String on los objectId de os roles separados por ;"]
+    //            rol:["String","obligatorio","!!!String on los objectId de os roles separados por ;"]
     //        }
     //    }
         .post(ctrlEmpleado.authenticate,ctrlEmpleado.agregarRol)

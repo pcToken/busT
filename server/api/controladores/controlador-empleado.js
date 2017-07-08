@@ -270,7 +270,7 @@ module.exports.login = function(req, res) {
                     },
                     secret.word,
                     {
-                        expiresIn: 3600
+                        expiresIn: 14400
                     });
                 // SUCCESS
                 res
@@ -303,7 +303,7 @@ module.exports.authenticate = function(req, res, next){
         
         verify(token,secret.word).then(function(decoded){
             if(req.params.idEmpresa && decoded.idEmpresa == req.params.idEmpresa) {next();} else {throw({                               statusCode:401,
-                    message:messages.E1001.message //unauthorized
+                    message:messages.E10001.message //unauthorized
                 });  
             };  
         }).catch(function(err){
@@ -314,7 +314,7 @@ module.exports.authenticate = function(req, res, next){
     else{
         var err = {
             statusCode: 403,
-            message:messages.E1002.message // missing token
+            message:messages.E10002.message // missing token
         };
         funciones.handleError(err,res);
     }

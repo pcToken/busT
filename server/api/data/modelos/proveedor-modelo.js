@@ -1,5 +1,7 @@
 var mongoose = require("mongoose");
-
+var enums = require("../enums.js");
+var autoPopulate = require('mongoose-autopopulate');
+var idValidator = require("mongoose-id-validator");
 var proveedorSchema = new mongoose.Schema({
     empresa:{
         type:String,
@@ -15,18 +17,22 @@ var proveedorSchema = new mongoose.Schema({
         cargo:String,
         correo:String,
         celular:[String],
-        telefono:[String]
+        telefono:[String],
+        activo:{
+            type: Boolean,
+            default : true
+        }
     }],
     direcciones:[{
         nombre:String,
         pais:{
             type:String,
-            enum:enums.paisEnum
+            enum: enums.paisEnum
         },
-        ciudad:[{
+        ciudad:{     
             type:String,
             enum:enums.ciudadEnum
-        }],
+        },
         calle:String,
         referencia:String,
         georef:{ 
@@ -38,9 +44,16 @@ var proveedorSchema = new mongoose.Schema({
     productos:[{
         idArticulo:{
             type: mongoose.Schema.Types.ObjectId,
-            ref:"Articulo"
+            ref:"Articulo",
+            autopopulate:true
         },
         idArticuloProveedor:String
-    }]
+    }],
+    activo:{
+        type: Boolean,
+        default : true
+    }
 });
+proveedorSchema.plugin(autoPopulate);
+proveedorSchema.plugin(idValidator);
 mongoose.model("Proveedor",proveedorSchema);

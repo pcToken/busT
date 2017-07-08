@@ -41,7 +41,7 @@ module.exports.mostrarEmpresa= function(req,res){
 };
 //devuelve todas las empresas menos el organigrama
 module.exports.mostrarEmpresas = function(req, res) {
-    Empresa.find().then(empresas=>{
+    Empresa.find({activo:true}).then(empresas=>{
             res.status(200).json(empresas);
     }).catch(err=>{
         funciones.handleError(err,res);

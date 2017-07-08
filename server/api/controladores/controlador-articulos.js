@@ -4,6 +4,7 @@ mongoose.promise = promise;
 var Articulo = mongoose.model('Articulo');
 var fs = require("fs");
 var funciones = require("./funciones.js");
+var messages = require("../messages.js");
 
 
 
@@ -13,7 +14,7 @@ module.exports.borrarFotos = function(req, res){
     Articulo.findOne({empresa:req.params.idEmpresa,codigo:req.params.codigoArticulo}).then(articulo=>{
         if(!req.body.idFotos) throw({
             statusCode:400,
-            message:"missing idFotos"
+            message:messages.E10102
         });
         else if(!articulo){
             throw({
@@ -38,7 +39,7 @@ module.exports.agregarFotos = function(req, res){
     Articulo.findOne({empresa:req.params.idEmpresa,codigo:req.params.codigoArticulo}).then(articulo=>{
         if(!req.files || !req.body.nombresFotos || !req.body.descripcionesFotos) throw({
                 statusCode:400,
-                message:"missing data"
+                message:messages.E10101
             });
         var nombresFotos = funciones._splitArray(req.body.nombresFotos);
         var fotos = req.files;
@@ -76,7 +77,7 @@ module.exports.borrarArticulo = function(req, res){
         if(!articulo){
             throw({
                 statusCode:404,
-                message:"articulo not found"
+                message:messages.E10202 // not found
             });
         }
         res.status(204).json();

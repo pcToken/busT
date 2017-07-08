@@ -18,12 +18,15 @@ module.exports = function(router){
         // crea articulo:
     //    {
     //        devuelve: {
-    //            exito: [201,"objeto json con el articulo creado"],
+    //            exito: [201],
     //            fracaso: [400,500,404]
     //        },
     //        recibe: {
     //            codigo : ["String","obligatorio"],
     //            nombre : ["String","obligatorio"],
+    //            precio:["Numero","obligatorio"],
+    //            moneda:["String","obligatorio","monedas posibles definidas en el modelo"],
+    //            stock:["Numero","obligatorio"],
     //            fotos : ["Arreglo de fotos(binarios)", "opcional"],
     //            nombresFotos: ["String","opcional,obligatorio si envia fotos", "nombres de las fotos separados por ; ej: gatito.jpg;perrito.jpg"],
     //            descripcionesFotos: ["String","opcional,obligatorio si envia fotos"],
@@ -31,9 +34,6 @@ module.exports = function(router){
     //            caracteristica:["String","opcional","breve descripcion del articulo"],
     //            embalaje:["String","opcional","define si es articulo o paquete u otra forma(formas posibles definidas en el modelo)"],
     //            cantidadPorPaquete:["Entero","opcional","indica que cantidad de de articulos vienen dentro en caso de ser necesario"],
-    //            precio:["Numero","obligatorio"],
-    //            moneda:["String","obligatorio","monedas posibles definidas en el modelo"],
-    //            stock:["Numero","obligatorio"],
     //            clasificacion:["objeto json","opcional"],
     //            padre:["String","opcional","codigo del articulo padre"]
     //        }
@@ -103,7 +103,7 @@ module.exports = function(router){
     //            fracaso[500,400]
     //        },
     //        recibe:{
-    //            fotos : ["Arreglo de fotos(binarios)", "opcional"],
+    //            fotos : ["Fotos bajo el mismo fieldname 'fotos'", "opcional"],
     //            nombresFotos: ["String","opcional,obligatorio si envia fotos", "nombres de las fotos separados por ; ej: gatito.jpg;perrito.jpg"],
     //            descripcionesFotos: ["String","opcional,obligatorio si envia fotos"],
     //        }

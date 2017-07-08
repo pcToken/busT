@@ -57,7 +57,7 @@ module.exports = function(router){
     //   actualizar sucursal
     //     {
     //        devuelve: {
-    //            exito: [2014],
+    //            exito: [204],
     //            fracaso: [400,500]
     //        },
     //        recibe: {
