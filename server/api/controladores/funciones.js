@@ -3,7 +3,9 @@ var promise = require("bluebird");
 var winston = require("winston");
 mongoose.promise = promise;
 var Articulo = mongoose.model('Articulo');
+var Ubicacion = mongoose.model('Ubicacion');
 var Cargo = mongoose.model('Cargo');
+var messages = require("../messages.js");
 var fs = require("fs");
 //splits values separated by ; and returns as array
 module.exports._splitArray = function(input) {
@@ -118,6 +120,103 @@ module.exports.actualizarPadreDeArticulo = function(idEmpresa, articulo, codigoP
         }
     });
 }
+// guardar como hijo en padre ubicacion
+// use only with existing idhijo
+function saveInParent(idHijo, idPadre){
+    return new promise(function(success, fail){
+        Ubicacion.findById(idPadre).then(padre=>{
+            if(!padre){
+                fail({
+                    status:404,
+                    message: messages.E10202 // not found
+                });
+            }
+            if(!padre.hijos) padre.hijos = [];
+            padre.hijos.push(idHijo);
+            return padre.save();
+        }).then(padre=>{
+            success(padre);
+        }).catch(err=>{
+            fail(err);
+        });
+    });
+}
+//cambiar padre de una ubicacion
+module.exports.changeParentUbicacion = function (ubicacion, idNuevoPadre){
+    return new promise((success, fail)=>{
+        promise.all([Ubicacion.findById(ubicacion.padre),Ubicacion.findById(idNuevoPadre)])
+            .spread((oldParent, newParent)=>{
+            if(!oldParent || !newParent){
+                fail({
+                    status:404,
+                    message: messages.E10202 // not found
+                });
+                return;
+            }
+            this.oldParent = oldParent;
+            this.newParent = newParent;
+            var hijos = [];
+            oldParent.hijos.map(hijo=>{
+                if(hijo._id =! ubicacion._id){
+                    hijos.push(hijo._id);
+                }
+            });
+            oldParent.hijos = hijos;
+            if(!newParent.hijos) newParent.hijos = [];
+            newParent.hijos.push(ubicacion._id);
+            ubicacion.padre = newParent._id;
+            return promise.all([oldParent.save(),newParent.save(),ubicacion.save()]);
+        }).spread((oldParent, newParent, ubicacion)=>{
+            this.ubicacion = ubicacion;
+            //substract from old
+            return updateQuantityInParents(this.oldParent,parseInt(ubicacion.cantidadActual),0, true);
+        }).then(firstNew=>{
+            //add to new
+            return updateQuantityInParents(this.newParent,0,parseInt(ubicacion.cantidadActual), true);
+        }).then(firstNew=>{
+            success(ubicacion);
+        }).catch(err=>{
+            fail(err);
+        });
+    });
+}
+// actualizar cantidad en todos los padres
+module.exports.updateQuantityInParents = updateQuantityInParents;
+function updateQuantityInParents(ubicacion,oldQuantity , newQuantity,firstIsParent){
+    return new promise((success, fail)=>{
+        var dif = parseInt(newQuantity) - parseInt(oldQuantity);
+        if((dif + ubicacion.cantidadActual) < ubicacion.cantidadActualHijos && !firstIsParent){
+            fail({
+                statusCode: 400,
+                message: messages.E10203 // resulting quantity less than children total quantity
+            });
+            return;
+        }
+        ubicacion.cantidadActual = parseInt(ubicacion.cantidadActual) + dif;
+        if(!ubicacion.padre || ubicacion.padre == ""){
+            ubicacion.save().then(ubicacion=>{
+                success(ubicacion);
+            }).catch(err=>{
+                fail(err);
+            });
+        }
+        else{
+            Ubicacion.findById(ubicacion.padre).then(padre=>{
+                if(firstIsParent){
+                    ubicacion.cantidadActualHijos += dif;
+                }
+                padre.cantidadActualHijos += dif;
+                return updateQuantityInParents(padre, oldQuantity, newQuantity,false);
+            }).then(padreFinal=>{
+                return ubicacion.save();
+            }).then(ubicacion =>{
+                success(ubicacion);
+            }).catch(err=>{
+                fail(err);
+            });
+        }
+    });
+}
 //filter not active cargos in a tree
 module.exports.filterCargoTree = filterCargoTree;
 function filterCargoTree(root){
@@ -190,4 +289,14 @@ module.exports.actualizarPadreDeCargo = function(idEmpresa, cargo, idPadre){
             });
         }
     });
+}
+//filter active in array
+module.exports.filterByActivoInArray= function(arr){
+    var actives = [];
+    arr.map((e,i)=>{
+        if(e.activo){
+            actives.push(e);
+        }
+    });
+    return actives;
 }

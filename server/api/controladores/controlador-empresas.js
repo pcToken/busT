@@ -3,6 +3,13 @@ var promise = require("bluebird");
 mongoose.promise = promise;
 var Empresa = mongoose.model('Empresa');
 var funciones = require("./funciones");
+
+
+/// testing barcode
+var barcode = require("barcode");
+var gtin = require("gtin.js").Gtin;
+var path = require("path");
+
 // anadir empresas
 // se anhade el id, nombre y el gerente general
 module.exports.crearEmpresa = function(req,res){
@@ -85,3 +92,18 @@ module.exports.borrarEmpresa = function(req, res){
         funciones.handleError(err,res);
     });
 };
+//testing barcode
+module.exports.getBarcode = function(req, res){
+    var upcBarCode = barcode("UPC-A",{
+        data:gtin.withCheckDigit("01234567891"),
+        width:400,
+        height:100
+    });
+    var outfile = path.join(__dirname, 'imgs', 'mycode.png');
+    upcBarCode.saveImage(outfile, function (err) {
+        if (err) throw err;
+
+        console.log('File has been written!');
+        res.status(200).json();
+    });
+}

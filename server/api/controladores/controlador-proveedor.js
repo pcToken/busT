@@ -2,6 +2,8 @@ var mongoose = require("mongoose");
 var promise = require("bluebird");
 mongoose.promise = promise;
 var Proveedor = mongoose.model('Proveedor');
+var Contacto = mongoose.model('ProveedorContacto');
+var Direccion = mongoose.model('ProveedorDireccion');
 var funciones = require("./funciones");
 var messages = require("../messages.js");
 
@@ -23,6 +25,7 @@ module.exports.getProveedores = function(req,res){
 };
 // create proveedor
 module.exports.createProveedor = function(req, res){
+    var promises = [];
     if(!req.body.nombre){
         funciones.handleError({
             statusCode:"400",
@@ -75,80 +78,98 @@ module.exports.createProveedor = function(req, res){
             if(correosContacto) contacto.correo = correosContacto[i];
             if(celularesContacto) contacto.celular = celularesContacto[i];
             if(telefonosContacto) contacto.telefono = telefonosContacto[i];
-            proveedor.contactos.push(contacto);
+            promises.push(Contacto.create(contacto));
         });
     }
-    if(req.body.nombresDirecciones){
-        var nombresDirecciones = funciones._splitArray(req.body.nombresDirecciones);
-        var diferentLengths = false;
-        if(req.body.paisesDirecciones) {
-            var paisesDirecciones = funciones._splitArray(req.body.paisesDirecciones);
-            if(paisesDirecciones.length != nombresDirecciones.length) diferentLengths = true;
+    
+    
+    Promise.all(promises).then((contactos)=>{
+        promises = [];
+        if(contactos){
+            contactos.map(contacto=>{
+                proveedor.contactos.push(contacto._id);
+            });
         }
-        if(req.body.callesDirecciones && !diferentLengths) {
-            var callesDirecciones = funciones._splitArray(req.body.callesDirecciones);
-            if(callesDirecciones.length != nombresDirecciones.length) diferentLengths = true;
+        if(req.body.nombresDirecciones){
+            var nombresDirecciones = funciones._splitArray(req.body.nombresDirecciones);
+            var diferentLengths = false;
+            if(req.body.paisesDirecciones) {
+                var paisesDirecciones = funciones._splitArray(req.body.paisesDirecciones);
+                if(paisesDirecciones.length != nombresDirecciones.length) diferentLengths = true;
+            }
+            if(req.body.callesDirecciones && !diferentLengths) {
+                var callesDirecciones = funciones._splitArray(req.body.callesDirecciones);
+                if(callesDirecciones.length != nombresDirecciones.length) diferentLengths = true;
+            }
+            if(req.body.ciudadesDirecciones && !diferentLengths) {
+                var ciudadesDirecciones = funciones._splitArray(req.body.ciudadesDirecciones);
+                if(ciudadesDirecciones.length != nombresDirecciones.length) diferentLengths = true;
+            }
+            if(req.body.referenciasDirecciones && !diferentLengths) {
+                var referenciasDirecciones = funciones._splitArray(req.body.referenciasDirecciones);
+                if(referenciasDirecciones.length != nombresDirecciones.length) diferentLengths = true;
+            }
+            if(req.body.longsDirecciones && req.body.latsDirecciones && !diferentLengths) {
+                var longsDirecciones = funciones._splitArray(req.body.longsDirecciones);
+                if(longsDirecciones.length != nombresDirecciones.length) diferentLengths = true;
+            }
+            if(req.body.longsDirecciones && req.body.latsDirecciones && !diferentLengths) {
+                var latsDirecciones = funciones._splitArray(req.body.latsDirecciones);
+                if(latsDirecciones.length != nombresDirecciones.length) diferentLengths = true;
+            }
+            if(diferentLengths){
+                funciones.handleError({
+                    statusCode:"400",
+                    message: messages.E10201 // ; separated arrays of different length
+                },res);
+                return;
+            }
+            if(!proveedor.direcciones) proveedor.direcciones = [];
+            nombresDirecciones.map((nomb, i)=>{
+                var direccion ={
+                    nombre: nomb
+                };
+                if(paisesDirecciones) direccion.pais = paisesDirecciones[i];
+                if(ciudadesDirecciones) direccion.ciudad = ciudadesDirecciones[i];
+                if(callesDirecciones) direccion.calle = callesDirecciones[i];
+                if(referenciasDirecciones) direccion.referencia = referenciasDirecciones[i];
+                if(longsDirecciones) direccion.georef = [longsDirecciones[i],latsDirecciones[i]];
+                promises.push(Direccion.create(direccion));
+            });
         }
-        if(req.body.ciudadesDirecciones && !diferentLengths) {
-            var ciudadesDirecciones = funciones._splitArray(req.body.ciudadesDirecciones);
-            if(ciudadesDirecciones.length != nombresDirecciones.length) diferentLengths = true;
+        return Promise.all(promises);
+    }).then(direcciones=>{
+        if(direcciones){
+            direcciones.map(direccion=>{
+                proveedor.direcciones.push(direccion._id);
+            });
         }
-        if(req.body.referenciasDirecciones && !diferentLengths) {
-            var referenciasDirecciones = funciones._splitArray(req.body.referenciasDirecciones);
-            if(referenciasDirecciones.length != nombresDirecciones.length) diferentLengths = true;
+        
+        if(req.body.idPropioArticulos){
+            var idPropioArticulos = funciones._splitArray(req.body.idPropioArticulos);
+            var diferentLengths = false;
+            if(req.body.idProveedorArticulos){
+                var idProveedorArticulos = funciones._splitArray(req.body.idProveedorArticulos);
+                if(idProveedorArticulos.length != idPropioArticulos.length) diferentLengths = true;
+            }
+            if(diferentLengths){
+                funciones.handleError({
+                    statusCode:"400",
+                    message: messages.E10201 // ; separated arrays of different length
+                },res);
+                return;
+            }
+            if(!proveedor.productos) proveedor.productos = [];
+            idPropioArticulos.map((idPropioArticulo,i) =>{
+                var articulo = {
+                    idArticulo : idPropioArticulo
+                };
+                if(idProveedorArticulos) articulo.idArticuloProveedor = idProveedorArticulos[i];
+                proveedor.productos.push(articulo);
+            })
         }
-        if(req.body.longsDirecciones && req.body.latsDirecciones && !diferentLengths) {
-            var longsDirecciones = funciones._splitArray(req.body.longsDirecciones);
-            if(longsDirecciones.length != nombresDirecciones.length) diferentLengths = true;
-        }
-        if(req.body.longsDirecciones && req.body.latsDirecciones && !diferentLengths) {
-            var latsDirecciones = funciones._splitArray(req.body.latsDirecciones);
-            if(latsDirecciones.length != nombresDirecciones.length) diferentLengths = true;
-        }
-        if(diferentLengths){
-            funciones.handleError({
-                statusCode:"400",
-                message: messages.E10201 // ; separated arrays of different length
-            },res);
-            return;
-        }
-        if(!proveedor.direcciones) proveedor.direcciones = [];
-        nombresDirecciones.map((nomb, i)=>{
-            var direccion ={
-                nombre: nomb
-            };
-            if(paisesDirecciones) direccion.pais = paisesDirecciones[i];
-            if(ciudadesDirecciones) direccion.ciudad = ciudadesDirecciones[i];
-            if(callesDirecciones) direccion.calle = callesDirecciones[i];
-            if(referenciasDirecciones) direccion.referencia = referenciasDirecciones[i];
-            if(longsDirecciones) direccion.georef = [longsDirecciones[i],latsDirecciones[i]];
-            proveedor.direcciones.push(direccion);
-        });
-    }
-    if(req.body.idPropioArticulos){
-        var idPropioArticulos = funciones._splitArray(req.body.idPropioArticulos);
-        var diferentLengths = false;
-        if(req.body.idProveedorArticulos){
-            var idProveedorArticulos = funciones._splitArray(req.body.idProveedorArticulos);
-            if(idProveedorArticulos.length != idPropioArticulos.length) diferentLengths = true;
-        }
-        if(diferentLengths){
-            funciones.handleError({
-                statusCode:"400",
-                message: messages.E10201 // ; separated arrays of different length
-            },res);
-            return;
-        }
-        if(!proveedor.productos) proveedor.productos = [];
-        idPropioArticulos.map((idPropioArticulo,i) =>{
-            var articulo = {
-                idArticulo : idPropioArticulo
-            };
-            if(idProveedorArticulos) articulo.idArticuloProveedor = idProveedorArticulos[i];
-            proveedor.productos.push(articulo);
-        })
-    }
-    Proveedor.create(proveedor).then(proveedor=>{
+        return Proveedor.create(proveedor);
+    }).then(proveedor =>{
         res.status(201).json(proveedor);
     }).catch(err=>{
         funciones.handleError(err,res);
@@ -171,13 +192,8 @@ module.exports.getProveedor = function(req, res){
                 message: messages.E10202 // Not found
             });
         }
-        var activeContacts = [];
-        proveedor.contactos.map(c=>{
-            if(c.activo){
-                activeContacts.push(c);
-            }
-        });
-        proveedor.contactos = activeContacts;
+        proveedor.contactos = funciones.filterByActivoInArray(proveedor.contactos);
+        proveedor.direcciones = funciones.filterByActivoInArray(proveedor.direcciones);
         res.status(200).json(proveedor);
     }).catch(err=>{
         funciones.handleError(err,res);
@@ -196,6 +212,7 @@ module.exports.updateProveedor = function(req, res){
         if(req.body.abreviatura) proveedor.abreviatura = req.body.abreviatura;
         if(req.body.nombreFactura) proveedor.nombreFactura = req.body.nombreFactura;
         if(req.body.nit) proveedor.nit = req.body.nit;
+        if(req.body.activo) proveedor.activo = req.body.activo;
         return proveedor.save();
     }).then(proveedor =>{
         res.status(204).json(proveedor);
@@ -218,7 +235,7 @@ module.exports.deleteProveedor = function(req, res){
     });
 };
 
-//add proveedor
+//add contacto
 module.exports.addContacto = function(req, res){
     if(!req.body.nombre){
         funciones.handleError({
@@ -242,19 +259,29 @@ module.exports.addContacto = function(req, res){
             });
         }
         if(!proveedor.contactos) proveedor.contactos = [];
-        proveedor.contactos.push(contacto);
-        return proveedor.save();
+        this.proveedor = proveedor;
+        return Contacto.create(contacto);
+    }).then(contacto=>{
+        this.proveedor.contactos.push(contacto._id);
+        return this.proveedor.save();
     }).then(proveedor=>{
         res.status(201).json(proveedor);
     }).catch(err=>{
         funciones.handleError(err,res);
     });
 }
-//add proveedor
+//update contacto
 module.exports.updateContacto = function(req, res){
     Proveedor.findById(req.params.idProveedor).then(proveedor=>{
-        var contacto = proveedor.contactos.id(req.params.idContacto);
-        if(!proveedor || !contacto){
+        if(!proveedor){
+            throw({
+                statusCode:404,
+                message: messages.E10202 // Not found
+            });
+        }
+        return Contacto.findById(req.params.idContacto);
+    }).then(contacto=>{
+        if(!contacto){
             throw({
                 statusCode:404,
                 message: messages.E10202 // Not found
@@ -265,26 +292,30 @@ module.exports.updateContacto = function(req, res){
         if(req.body.correo) contacto.correo = req.body.correo;
         if(req.body.celulares) contacto.celular = funciones._splitArray(req.body.celulares);
         if(req.body.telefonos) contacto.telefono = funciones._splitArray(req.body.telefonos);
-        return proveedor.save();
-    }).then(proveedor=>{
+        return contacto.save();
+    }).then(contacto=>{
         res.status(204).json();
     }).catch(err=>{
         funciones.handleError(err,res);
     });
 }
-//add proveedor
+//delete contacto
 module.exports.deleteContacto = function(req, res){
     Proveedor.findById(req.params.idProveedor).then(proveedor=>{
-        var contacto = proveedor.contactos.id(req.params.idContacto);
-        if(!proveedor || !contacto){
+        if(!proveedor){
             throw({
                 statusCode:404,
                 message: messages.E10202 // Not found
             });
         }
-        contacto.activo = false;
-        return proveedor.save();
-    }).then(proveedor=>{
+        return Contacto.findByIdAndUpdate({"_id":req.params.idContacto},{$set:{activo:false}});
+    }).then(contacto=>{
+        if(!contacto){
+            throw({
+                statusCode:404,
+                message: messages.E10202 // Not found
+            });
+        }
         res.status(204).json();
     }).catch(err=>{
         funciones.handleError(err,res);
@@ -315,8 +346,11 @@ module.exports.addDireccion = function(req,res){
             });
         }
         if(!proveedor.direcciones) proveedor.direcciones = [];
-        proveedor.direcciones.push(direccion);
-        return proveedor.save();
+        this.proveedor = proveedor;
+        return Direccion.create(direccion);
+    }).then(direccion=>{
+        this.proveedor.direcciones.push(direccion._id);
+        return this.proveedor.save();
     }).then(proveedor=>{
         res.status(201).json(proveedor);
     }).catch(err=>{
@@ -326,8 +360,15 @@ module.exports.addDireccion = function(req,res){
 //update direccion
 module.exports.updateDireccion = function(req,res){
     Proveedor.findById(req.params.idProveedor).then(proveedor=>{
-        var direccion = proveedor.direcciones.id(req.params.idDireccion);
-        if(!proveedor || !direccion){
+        if(!proveedor){
+            throw({
+                statusCode:404,
+                message: messages.E10202 // Not found
+            });
+        }
+        return Direccion.findById(req.params.idDireccion);
+    }).then(direccion =>{
+        if(!direccion){
             throw({
                 statusCode:404,
                 message: messages.E10202 // Not found
@@ -339,8 +380,8 @@ module.exports.updateDireccion = function(req,res){
         if(req.body.calle) direccion.calle = req.body.calle;
         if(req.body.referencia) direccion.referencia = req.body.referencia;
         if(req.body.longitude && req.body.latitude) direccion.georef = [req.body.longitude,req.body.latitude];
-        return proveedor.save();
-    }).then(proveedor=>{
+        return direccion.save();
+    }).then(direccion=>{
         res.status(204).json();
     }).catch(err=>{
         funciones.handleError(err,res);
@@ -349,16 +390,20 @@ module.exports.updateDireccion = function(req,res){
 //delete direccion
 module.exports.deleteDireccion = function(req,res){
     Proveedor.findById(req.params.idProveedor).then(proveedor=>{
-        var direccion = proveedor.direcciones.id(req.params.idDireccion);
-        if(!proveedor || !direccion){
+        if(!proveedor){
             throw({
                 statusCode:404,
                 message: messages.E10202 // Not found
             });
         }
-        proveedor.direcciones.remove(req.params.idDireccion);
-        return proveedor.save();
-    }).then(proveedor=>{
+        return Direccion.findByIdAndUpdate({"_id":req.params.idDireccion},{$set:{activo:false}});
+    }).then(direccion=>{
+        if(!direccion){
+            throw({
+                statusCode:404,
+                message: messages.E10202 // Not found
+            });
+        }
         res.status(204).json();
     }).catch(err=>{
         funciones.handleError(err,res);

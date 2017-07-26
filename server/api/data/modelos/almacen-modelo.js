@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 var autoPopulate = require('mongoose-autopopulate');
 var almacenSchema = new mongoose.Schema({
-    idEmpresa:{
+    empresa:{
         required:true,
         type: String
     },
@@ -31,9 +31,10 @@ var almacenSchema = new mongoose.Schema({
             index: '2dsphere'
         }
     },
-    ubicacion:[{
+    ubicaciones:[{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'Ubicacion'
+        ref:'Ubicacion',
+        autopopulate:true
     }],
     activo:{type:Boolean, default:true}
 });
@@ -50,6 +51,9 @@ var ubicacionSchema = mongoose.Schema({
     cantidadActual:{
         type: Number
     },
+    cantidadActualHijos:{
+        type:Number
+    },
     padre:{
         type: mongoose.Schema.Types.ObjectId,
         ref:"Ubicacion"
@@ -65,6 +69,7 @@ var ubicacionSchema = mongoose.Schema({
     }              
 });
 ubicacionSchema.plugin(autoPopulate);
+almacenSchema.plugin(autoPopulate);
 
 mongoose.model("Almacen",almacenSchema,"almacenes");
 mongoose.model("Ubicacion",ubicacionSchema,"ubicaciones");

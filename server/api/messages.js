@@ -15,10 +15,13 @@ module.exports = {
     },
     // bad request 10201-10299
     E10201:{
-        message: "E10201: ; separated arrays of different length"
+        message: "E10201: arrays of different length"
     },
     E10202:{
         message:"E10202: NOT FOUND"
+    },
+    E10203:{
+        message: "E10203 resulting new quantity can not be less than children total quantity"
     }
     
 }

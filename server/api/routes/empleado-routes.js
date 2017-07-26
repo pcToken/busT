@@ -24,7 +24,7 @@ module.exports = function(router){
     //            horarios:["String","opcional"]
     //        }
     //    }
-        .post(ctrlEmpleado.crearEmpleado)
+        .post(ctrlEmpleado.authenticate,ctrlEmpleado.crearEmpleado)
     //    mostrar empleados
     //     {
     //        devuelve: {
@@ -33,7 +33,7 @@ module.exports = function(router){
     //        },
     //        recibe: {}
     //    }
-        .get(ctrlEmpleado.mostrarEmpleados);
+        .get(ctrlEmpleado.authenticate,ctrlEmpleado.mostrarEmpleados);
     router
         .route("/empresa/:idEmpresa/empleado/completo")
     //    mostrar empleados

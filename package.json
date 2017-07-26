@@ -12,11 +12,13 @@
   "author": "sho, paulo",
   "license": "ISC",
   "dependencies": {
+    "barcode": "^0.1.0",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "cors": "^2.8.3",
     "express": "^4.15.2",
+    "gtin.js": "^1.1.1",
     "https": "^1.0.0",
     "jsonwebtoken": "^7.4.0",
     "mongoose": "^4.9.6",

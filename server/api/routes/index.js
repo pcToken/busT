@@ -8,6 +8,8 @@ var sucursales_routes = require("./sucursales-routes")(router);
 var empleado_routes = require("./empleado-routes")(router);
 var rol_routes = require("./rol-routes")(router);
 var proveedor_routes = require("./proveedor-routes")(router);
+var compras_routes = require("./compras-routes")(router);
+var almacen_routes = require("./almacen-routes")(router);
 
 var ctrlEmpresa = require('../controladores/controlador-empresas.js');
 
@@ -73,7 +75,8 @@ router
     .delete(ctrlEmpleado.authenticate,ctrlEmpresa.borrarEmpresa);
 
 
-
+//testing barcode
+router.route("/barcode").get(ctrlEmpresa.getBarcode);
 
 
 module.exports=router;
