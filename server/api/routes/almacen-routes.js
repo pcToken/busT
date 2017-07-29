@@ -22,7 +22,7 @@ module.exports = function(router){
 //            latitudeDireccion:["number","optional"]
 //        }
 //    }
-    .post(ctrlEmpleado.authenticate, ctrlAlmacen.addAlmacen)
+    .post(ctrlAlmacen.addAlmacen)
     //get almacenes
 //    {
 //        returns:{
@@ -32,7 +32,7 @@ module.exports = function(router){
 //        receives:{
 //        }
 //    }
-    .get(ctrlEmpleado.authenticate, ctrlAlmacen.getAlmacenes)
+    .get(ctrlAlmacen.getAlmacenes)
     
     router.route("/empresa/:idEmpresa/almacen/completo")
     //get almacenes completo
@@ -44,7 +44,7 @@ module.exports = function(router){
 //        receives:{
 //        }
 //    }
-    .get(ctrlEmpleado.authenticate, ctrlAlmacen.getAlmacenesCompleto);
+    .get(ctrlAlmacen.getAlmacenesCompleto);
     
     router.route("/empresa/:idEmpresa/almacen/:idAlmacen")
       //   get almacen
@@ -56,7 +56,7 @@ module.exports = function(router){
     //        receives:{
     //        }
     //    }
-    .get(ctrlEmpleado.authenticate, ctrlAlmacen.getAlmacen)
+    .get(ctrlAlmacen.getAlmacen)
     //delete almacen
     //    {
     //        returns:{

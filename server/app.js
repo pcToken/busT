@@ -47,7 +47,7 @@ app.use(bodyParser.json());
 
 // use routes from file route
 app.use('/api', routes);
-
+app.use(express.static("public"));
 app.use('/node_modules', express.static(path.join(__dirname,'/../node_modules')));
 
 //setting app port
